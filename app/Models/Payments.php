@@ -4,16 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 
-class Admin extends Model
+class Payments extends Model
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory;
 
-    protected $table = 'admins';
+    protected $table = 'payments';
     protected $fillable = [
-        'admin_lname',
+        'admin_id',
         'admin_fname',
         'admin_mname',
         'admin_image',

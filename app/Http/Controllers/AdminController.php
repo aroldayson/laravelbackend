@@ -23,7 +23,6 @@ class AdminController extends Controller
             'password' => 'required|confirmed|min:8', 
         ]);
         
-        // Hashing the password before storing
         $formField['password'] = Hash::make($formField['password']);
 
         Admin::create($formField);
@@ -31,29 +30,24 @@ class AdminController extends Controller
     }
 
     public function login(Request $request) {
-        // Validate input
         $validated = $request->validate([
             'email' => 'required|email|max:255',
             'password' => 'required'
         ]);
     
-        // Find the admin by email
         $user = Admin::where('email', $validated['email'])->first();
     
-        // Check if user exists and password is correct
         if (!$user || !Hash::check($validated['password'], $user->password)) {
             return response()->json([
                 'message' => 'The provided credentials are incorrect'
             ], 401);
         }
-    
-        // Create a token for the user
+
         $token = $user->createToken($user->admin_lname);
     
-        // Return the user object and token
         return response()->json([
             'user' => $user,
-            'token' => $token->plainTextToken // Ensure token is returned properly
+            'token' => $token->plainTextToken
         ], 200);
     }
 
@@ -87,20 +81,22 @@ class AdminController extends Controller
             'address' => 'required|string|max:255',
             'role' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:admins',
-            'password' => 'required|confirmed|min:6', // Ensure password and confirmation are present
+            'password' => 'required|confirmed|min:6', 
         ]);
 
-        // Hash the password
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
 
-        // Create staff record
         $staff = Admin::create($data);
 
-        return response()->json(['message' => 'Staff added successfully', 'staff' => $staff], 201);
+        $staffList = Admin::orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'message' => 'Staff added successfully',
+            'staff' => $staff,
+            'staffList' => $staffList
+        ], 201);
     }
-
-
 
     public function updatestaff(Request $request, $id){
         $staff = admin::find($id);
@@ -108,7 +104,7 @@ class AdminController extends Controller
             return response()->json(['message' => 'Employee not Found'], 404);
         }
         $staff->update($request->all());
-        return response($response, 200);
+        return response($staff, 200);
 
     }
     public function deletestaff(Request $request, $id){
