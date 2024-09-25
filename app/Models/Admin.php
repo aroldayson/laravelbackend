@@ -12,16 +12,20 @@ class Admin extends Model
     use HasFactory, Notifiable, HasApiTokens;
 
     protected $table = 'admins';
+    protected $primaryKey = 'Admin_ID';
+    public $incrementing = true; 
+    protected $keyType = 'int'; 
     protected $fillable = [
-        'admin_lname',
-        'admin_fname',
-        'admin_mname',
-        'admin_image',
-        'birthdate',
-        'phone_no',
-        'address',
-        'role',
-        'email',
-        'password',
+        'Admin_ID',
+        'Admin_lname',
+        'Admin_fname',
+        'Admin_mname',
+        'Admin_image',
+        'Birthdate',
+        'Phone_no',
+        'Address',
+        'Role',
+        'Email',
+        'Password',
     ];
 }

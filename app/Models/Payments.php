@@ -11,15 +11,7 @@ class Payments extends Model
 
     protected $table = 'payments';
     protected $fillable = [
-        'admin_id',
-        'admin_fname',
-        'admin_mname',
-        'admin_image',
-        'birthdate',
-        'phone_no',
-        'address',
-        'role',
-        'email',
-        'password',
+        'Amount',
+        'Mode_of_Payment'
     ];
 }

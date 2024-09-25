@@ -10,14 +10,14 @@ class AuthControlle extends Controller
 {
     public function up()
     {
-        Schema::create('admin', function (Blueprint $table) {
+        Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('admin_lname');
-            $table->string('admin_fname');
-            $table->string('admin_mname');
-            $table->string('email')->unique();
+            $table->string('Admin_lname');
+            $table->string('Admin_fname');
+            $table->string('Admin_mname');
+            $table->string('Email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('Password');
             $table->rememberToken();
             $table->timestamps();
         });
