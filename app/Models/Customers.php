@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Transactions;
 class Customers extends Model
 {
     use HasFactory;
@@ -24,5 +24,9 @@ class Customers extends Model
         'Cust_image'
     ];
 
+    public function transactions()
+    {
+        return $this->hasMany(Transactions::class, 'Cust_ID', 'Cust_ID');
+    }
     
 }
