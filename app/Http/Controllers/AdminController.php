@@ -145,41 +145,33 @@ class AdminController extends Controller
         $admin = Admin::findOrFail($id);
     
         if ($request->hasFile('Admin_image')) {
-            // Delete old image if exists in storage and htdocs
             if ($admin->Admin_image) {
-                // Delete from storage
                 Storage::delete('public/profile_images/' . $admin->Admin_image);
                 
-                // Delete from htdocs folder
                 $htdocsImagePath = 'C:/xampp/htdocs/admin/profile_images/' . $admin->Admin_image;
                 if (file_exists($htdocsImagePath)) {
                     unlink($htdocsImagePath);
                 }
             }
     
-            // Get the image extension and store the new image name
             $extension = $request->Admin_image->extension();
             $imageName = time() . '_' . $admin->Admin_ID . '.' . $extension;
             $request->Admin_image->storeAs('public/profile_images', $imageName);
     
-            // Define the path for the htdocs folder in your local machine
-            $htdocsPath = 'C:/xampp/htdocs/admin/profile_images'; // Replace with your actual project folder name
+            $htdocsPath = 'C:/xampp/htdocs/admin/profile_images'; 
     
-            // Ensure the directory exists, if not, create it
             if (!file_exists($htdocsPath)) {
                 mkdir($htdocsPath, 0777, true);
             }
     
-            // Save the image in the htdocs project folder
             $request->Admin_image->move($htdocsPath, $imageName);
     
-            // Update admin's profile image name and extension in the database
             $admin->Admin_image = $imageName;
             $admin->save();
     
             return response()->json([
                 'message' => 'Profile image updated successfully',
-                'image_url' => asset('profile_images/' . $imageName) // URL to the htdocs folder
+                'image_url' => asset('profile_images/' . $imageName) 
             ], 200);
         }
     
@@ -362,6 +354,23 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function CountDisplay()
+    {
+        // Count occurrences of each unique Tracking_number
+        $trackingCounts = Transactions::select('Tracking_number', DB::raw('count(*) as total_count'))
+            ->groupBy('Tracking_number')
+            ->get();
+        
+        // Count total occurrences of all unique Tracking_numbers
+        $totalTrackingCount = $trackingCounts->count('Tracking_number');
+
+        // Returning the tracking numbers with their counts and the total count as a JSON response
+        return response()->json([
+            'tracking_counts' => $trackingCounts,
+            'total_count' => $totalTrackingCount
+        ], 200);
+    }
+
     public function findtrans($id)
     {
         $price = TransactionDetails::all();
@@ -435,10 +444,6 @@ class AdminController extends Controller
             return response()->json(['message' => 'Transaction not found'], 404);
         }
 
-        
-
-        // $totalprice = $price->sum('Price');
-
         $transaction = Transactions::where('customers.Cust_ID', $id)
         ->join('customers', 'transactions.Cust_ID', '=', 'customers.Cust_ID')
         ->join('transaction_details', 'transactions.Transac_ID', '=', 'transaction_details.Transac_ID')
@@ -454,6 +459,7 @@ class AdminController extends Controller
             'transactions.Delivery_datetime',
             'transactions.Staffincharge',
             'transaction_details.Qty',
+            'transaction_details.Weight',
             'transaction_details.Price',
             'customers.Cust_fname', 
             'customers.Cust_lname', 
@@ -477,6 +483,7 @@ class AdminController extends Controller
             'transactions.Delivery_datetime',
             'transactions.Staffincharge',
             'transaction_details.Qty',
+            'transaction_details.Weight',
             'transaction_details.Price',
             'customers.Cust_fname', 
             'customers.Cust_lname', 
@@ -504,31 +511,23 @@ class AdminController extends Controller
         ->join('customers', 'transactions.Cust_ID', '=', 'customers.Cust_ID')
         ->join('transaction_details', 'transactions.Transac_ID', '=', 'transaction_details.Transac_ID')
         ->select(DB::raw('CAST(SUM(transaction_details.Price) AS UNSIGNED) as totalPrice'))
-        ->first(); // Use first() instead of get() to get a single result
+        ->first();
 
-        if (!$price || $price->totalPrice === null) { // Check if price is null or not found
+        if (!$price || $price->totalPrice === null) { 
         return response()->json(['message' => 'Transaction not found'], 404);
         }
 
-        // Fetch total amount from payments
         $amount = Transactions::where('customers.Cust_ID', $id)
         ->join('customers', 'transactions.Cust_ID', '=', 'customers.Cust_ID')
         ->join('payments', 'transactions.Transac_ID', '=', 'payments.Transac_ID')
         ->select(DB::raw('CAST(SUM(payments.Amount) AS UNSIGNED) as totalAmount'))
-        ->first(); // Use first() instead of get() to get a single result
+        ->first(); 
 
-        if (!$amount || $amount->totalAmount === null) { // Check if amount is null or not found
+        if (!$amount || $amount->totalAmount === null) {
         return response()->json(['message' => 'Transaction not found'], 404);
         }
 
-        // Calculate total
         $total = $amount->totalAmount - $price->totalPrice;
-
-        // Return the JSON response
-       
-    
-
-        // $totalprice = $price->sum('Price');
 
         $transaction = Transactions::where('customers.Cust_ID', $id)
         ->join('customers', 'transactions.Cust_ID', '=', 'customers.Cust_ID')
@@ -593,25 +592,43 @@ class AdminController extends Controller
             'balance' => $total
             ], 200);
     }
-    
-    
 
+    // EXPENSES
+    public function displayexpenses()
+    {
+        
+        $price = Expenses::join('admins', 'admins.Admin_ID', '=', 'expenses.Admin_ID')
+        ->select('expenses.*', 'admins.*') 
+        ->orderBy('expenses.Expense_ID', 'desc')  // Order by expenses.ID in descending order
+        ->get();
 
-    public function sampledis(){
-        $customerId = 3; // Set this to the ID you want to query
-
-        $transaction = DB::table('transactions')
-            ->join('customers', 'transactions.Cust_ID', '=', 'customers.Cust_ID')
-            ->join('transaction_details', 'transactions.Transac_ID', '=', 'transaction_details.Transac_ID')
-            ->select(
-                'transactions.Cust_ID',
-                DB::raw('SUM(transaction_details.Price) as totalPrice') // Sum of prices for this customer
-            )
-            ->where('customers.Cust_ID', $customerId) // Filter by specific customer ID
-            ->groupBy('transactions.Cust_ID') // Group by the customer ID
-            ->first(); // Get a single record
-        return response()->json($transaction, 200);
+        return response()->json($price, 200);
     }
+
+
+    public function sampledis(Request $request)
+    {
+        // Count occurrences of each unique Tracking_number
+        $trackingCounts = Transactions::select('Tracking_number', DB::raw('count(*) as total_count'))
+            ->groupBy('Tracking_number')
+            ->get();
+        
+        // Count total occurrences of all unique Tracking_numbers
+        $totalTrackingCount = $trackingCounts->count('Tracking_number');
+
+        // Returning the tracking numbers with their counts and the total count as a JSON response
+        return response()->json([
+            'tracking_counts' => $trackingCounts,
+            'total_count' => $totalTrackingCount
+        ], 200);
+    }
+
+    
+
+
+
+
+
 
 
 }

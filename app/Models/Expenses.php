@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Admin;
 
 class Expenses extends Model
 {
@@ -21,4 +22,7 @@ class Expenses extends Model
         'Receipt_filenameimg',
         'Datetime_taken'
     ];
+    public function admin() {
+        return $this->belongsTo(Admin::class, 'Admin_ID', 'Admin_ID');
+    }
 }

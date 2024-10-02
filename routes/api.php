@@ -48,9 +48,14 @@ Route::get('/findtrans/{id}',[AdminController::class, 'findtrans']);
 Route::get('/printtrans/{id}',[AdminController::class, 'printtrans']);
 Route::get('/calculateBalance/{id}',[AdminController::class, 'calculateBalance']);
 
+// expenses
+Route::get('/displayexpenses',[AdminController::class, 'displayexpenses']);
+
 
 
 
 // sampleoutput
+Route::get('/sampledis/{customerId}',[AdminController::class, 'sampledis']);
 Route::get('/sampledis',[AdminController::class, 'sampledis']);
+Route::get('/CountDisplay',[AdminController::class, 'CountDisplay']);
 

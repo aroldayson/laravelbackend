@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Transactions;
+use App\Models\Expenses;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 
@@ -32,5 +33,6 @@ class Admin extends Model
     public function transactions()
     {
         return $this->hasMany(Transactions::class, 'Admin_ID', 'Admin_ID');
+        return $this->hasMany(Expenses::class, 'Admin_ID', 'Admin_ID');
     }
 }
