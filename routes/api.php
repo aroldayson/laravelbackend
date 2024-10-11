@@ -15,7 +15,7 @@ Route::post('/register',[AdminController::class, 'register']);
 Route::post('/logout', [AdminController::class, 'logout'])->middleware('auth:sanctum');
 
 // staff
-Route::get('/display',[AdminController::class, 'display']);
+Route::get('/displaystaff',[AdminController::class, 'displaystaff']);
 Route::get('/findstaff/{id}',[AdminController::class, 'findstaff']);
 Route::post('/addstaff',[AdminController::class, 'addstaff']);
 Route::put('/updatestaff/{id}',[AdminController::class, 'updatestaff']);
@@ -25,8 +25,8 @@ Route::get('/getUser',[AdminController::class, 'getUser']);
 
 Route::put('/upload/{id}', [AdminController::class, 'upload']);
 Route::get('/upload/{id}', [AdminController::class, 'upload']);
-
 Route::post('/update-profile-image/{id}', [AdminController::class, 'updateProfileImage']);
+
 // pricemanagement
 Route::get('/pricedisplay',[AdminController::class, 'pricedisplay']);
 Route::post('/addprice',[AdminController::class, 'addprice']);
@@ -37,6 +37,9 @@ Route::put('/updateprice/{id}',[AdminController::class, 'updateprice']);
 // dashboard
 Route::get('/dashdisplays',[AdminController::class, 'dashdisplays']);
 Route::get('/expensendisplays',[AdminController::class, 'expensendisplays']);
+Route::get('/displaystaffs',[AdminController::class, 'displaystaffs']);
+Route::post('/cashinitial',[AdminController::class, 'cashinitial']);
+Route::post('/remittance',[AdminController::class, 'remittance']);
 
 // customer
 Route::get('/customerdisplay',[AdminController::class, 'customerdisplay']);
@@ -47,15 +50,19 @@ Route::get('/Transadisplay',[AdminController::class, 'Transadisplay']);
 Route::get('/findtrans/{id}',[AdminController::class, 'findtrans']);
 Route::get('/printtrans/{id}',[AdminController::class, 'printtrans']);
 Route::get('/calculateBalance/{id}',[AdminController::class, 'calculateBalance']);
+Route::get('/approvedtrans/{id}',[AdminController::class, 'approvedtrans']);
+Route::get('/remittanceapproved',[AdminController::class, 'remittanceapproved']);
+Route::get('/printTransac/{id}',[AdminController::class, 'printTransac']);
 
-// expenses
+// report
 Route::get('/displayexpenses',[AdminController::class, 'displayexpenses']);
-
+Route::get('/displayincome',[AdminController::class, 'displayincome']);
 
 
 
 // sampleoutput
-Route::get('/sampledis/{customerId}',[AdminController::class, 'sampledis']);
+Route::get('/sampledis/{id}',[AdminController::class, 'sampledis']);
 Route::get('/sampledis',[AdminController::class, 'sampledis']);
+Route::post('/sampledis',[AdminController::class, 'sampledis']);
 Route::get('/CountDisplay',[AdminController::class, 'CountDisplay']);
 

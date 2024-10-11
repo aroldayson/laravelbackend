@@ -17,14 +17,14 @@ class Payments extends Model
     protected $fillable = [
         'Payment_ID',
         "Admin_ID",
-        "Transac_ID",
+        "Tracking_number",
         'Amount',
         'Mode_of_Payment'
     ];
 
     public function transaction()
     {
-        return $this->hasMany(Transactions::class, 'Transac_ID', 'Transac_ID');
+        return $this->hasMany(Transactions::class, 'Tracking_number', 'Tracking_number');
         // return $this->hasMany(Laundrycategorys::class, 'Categ_ID', 'Categ_ID');
     }
 }

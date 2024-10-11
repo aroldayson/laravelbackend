@@ -13,14 +13,14 @@ class Transactions extends Model
 {
     use HasFactory;
     protected $table = 'transactions';
-    protected $primaryKey = 'Transac_ID';
+    protected $primaryKey = 'Tracking_number';
     public $incrementing = true; 
-    protected $keyType = 'int'; 
+    protected $keyType = 'string'; 
     protected $fillable = [
-        "Transac_ID",
+        "Tracking_number",
         "Cust_ID",
         'Admin_ID',
-        'Transac_date',
+        'Tracking_number',
         'Transac_status',
         'Tracking_number',
         'Pickup_datetime',
@@ -30,8 +30,8 @@ class Transactions extends Model
     public function customers()
     {
         return $this->belongsTo(Customers::class, 'Cust_ID', 'Cust_ID');
-        return $this->hasMany(TransactionDetails::class, 'Transac_ID', 'Transac_ID');
-        return $this->hasMany(Payments::class, 'Transac_ID', 'Transac_ID');
+        return $this->hasMany(TransactionDetails::class, 'Tracking_number', 'Tracking_number');
+        return $this->hasMany(Payments::class, 'Tracking_number', 'Tracking_number');
         return $this->hasMany(Admin::class, 'Admin_ID', 'Admin_ID');
     }
 

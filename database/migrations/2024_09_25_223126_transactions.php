@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('Tracking_number');
             $table->timestamps('Pickup_datetime');
             $table->timestamps('Delivery_datetime');
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
